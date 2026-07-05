@@ -26,45 +26,48 @@ Texture InitDVDLogoTexture() {
 
 DVDLogo InitDVDLogo(Texture texture) {
 
-    DVDLogo dvdLogo;
-
-    dvdLogo.srcRect = (Rectangle){
+    DVDLogo dvdLogo = {
+      .srcRect = (Rectangle){
         .x = 0,
         .y = 0,
         .width = texture.width,
         .height = texture.height,
-    };
+      },
 
-    dvdLogo.dstRect = (Rectangle){
-        .x = GetRandomValue(LOGO_WIDTH, SCREEN_WIDTH - LOGO_WIDTH),
-        .y = GetRandomValue(LOGO_HEIGHT, SCREEN_HEIGHT - LOGO_HEIGHT),
-        .width = LOGO_WIDTH,
-        .height = LOGO_HEIGHT,
-    };
+      .dstRect = (Rectangle){
+              .x = GetRandomValue(LOGO_WIDTH, SCREEN_WIDTH - LOGO_WIDTH),
+              .y = GetRandomValue(LOGO_HEIGHT, SCREEN_HEIGHT - LOGO_HEIGHT),
+              .width = LOGO_WIDTH,
+              .height = LOGO_HEIGHT,
+      },
 
-    dvdLogo.originCoords = (Vector2){
-        .x = 0,
-        .y = 0,
-    };
+      .originCoords = (Vector2){
+          .x = 0,
+          .y = 0,
+      },
 
-    dvdLogo.velocity = (Vector2) {
-        .x = LOGO_VELOCITY_X,
-        .y = LOGO_VELOCITY_Y,
-    };
+      .velocity = (Vector2){
+          .x = LOGO_VELOCITY_X,
+          .y = LOGO_VELOCITY_Y,
+      },
 
-    dvdLogo.dvdColor = WHITE;
+      .dvdColor = WHITE,
+
+    };
 
     return dvdLogo;
 }
 
 void ChangeDVDColor(DVDLogo *dvdLogo) {
-  dvdLogo->dvdColor.r = GetRandomValue(100, 255);
-  dvdLogo->dvdColor.g = GetRandomValue(100, 255);
-  dvdLogo->dvdColor.b = GetRandomValue(100, 255);
-  dvdLogo->dvdColor.a = 255;
+    dvdLogo->dvdColor = (Color){
+        .r = GetRandomValue(100, 255),
+        .g = GetRandomValue(100, 255),
+        .b = GetRandomValue(100, 255),
+        .a = 255,
+    };
 }
 
-void BounceBackDVD_X(DVDLogo *dvdLogo) {
+void HorizontalCollision(DVDLogo *dvdLogo) {
   // Horizontal Collision Detection
   if (dvdLogo->dstRect.x >= SCREEN_WIDTH - dvdLogo->dstRect.width) {
     dvdLogo->dstRect.x = SCREEN_WIDTH - dvdLogo->dstRect.width;
@@ -77,7 +80,7 @@ void BounceBackDVD_X(DVDLogo *dvdLogo) {
   }
 }
 
-void BounceBackDVD_Y(DVDLogo *dvdLogo) {
+void VerticalCollison(DVDLogo *dvdLogo) {
   // Vertical Collision Detection
   if (dvdLogo->dstRect.y >= (SCREEN_HEIGHT - dvdLogo->dstRect.height)) {
     dvdLogo->dstRect.y = SCREEN_HEIGHT - dvdLogo->dstRect.height;
@@ -96,8 +99,8 @@ void UpdateDVDLogo(DVDLogo *dvdLogo) {
   dvdLogo->dstRect.x += dvdLogo->velocity.x * dt;
   dvdLogo->dstRect.y += dvdLogo->velocity.y * dt;
 
-  BounceBackDVD_X(dvdLogo);
-  BounceBackDVD_Y(dvdLogo);
+  HorizontalCollision(dvdLogo);
+  VerticalCollison(dvdLogo);
 }
 
 int main(int argc, char *argv[]) {
