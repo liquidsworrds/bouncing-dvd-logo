@@ -1,24 +1,24 @@
 #include "raylib.h"
 
-#define SCREEN_WIDTH  1920
+#define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
 
-#define LOGO_WIDTH  200
+#define LOGO_WIDTH 200
 #define LOGO_HEIGHT 100
 
 #define LOGO_VELOCITY_X 200
 #define LOGO_VELOCITY_Y 200
 
 typedef struct DVDLogo {
-    Rectangle srcRect;
-    Rectangle dstRect;
-    Vector2 originCoords;
-    Vector2 velocity;
-    Color dvdColor;
+  Rectangle srcRect;
+  Rectangle dstRect;
+  Vector2 originCoords;
+  Vector2 velocity;
+  Color dvdColor;
 } DVDLogo;
 
-Texture InitDVDLogoTexture() {
-  Image image = LoadImage("./DVD_VIDEO_logo.png");
+Texture InitDVDLogoTexture(const char *path) {
+  Image image = LoadImage(path);
   Texture texture = LoadTextureFromImage(image);
   UnloadImage(image);
   return texture;
@@ -26,45 +26,49 @@ Texture InitDVDLogoTexture() {
 
 DVDLogo InitDVDLogo(Texture texture) {
 
-    DVDLogo dvdLogo = {
-      .srcRect = (Rectangle){
-        .x = 0,
-        .y = 0,
-        .width = texture.width,
-        .height = texture.height,
-      },
+  DVDLogo dvdLogo = {
+      .srcRect =
+          (Rectangle){
+              .x = 0,
+              .y = 0,
+              .width = texture.width,
+              .height = texture.height,
+          },
 
-      .dstRect = (Rectangle){
+      .dstRect =
+          (Rectangle){
               .x = GetRandomValue(LOGO_WIDTH, SCREEN_WIDTH - LOGO_WIDTH),
               .y = GetRandomValue(LOGO_HEIGHT, SCREEN_HEIGHT - LOGO_HEIGHT),
               .width = LOGO_WIDTH,
               .height = LOGO_HEIGHT,
-      },
+          },
 
-      .originCoords = (Vector2){
-          .x = 0,
-          .y = 0,
-      },
+      .originCoords =
+          (Vector2){
+              .x = 0,
+              .y = 0,
+          },
 
-      .velocity = (Vector2){
-          .x = LOGO_VELOCITY_X,
-          .y = LOGO_VELOCITY_Y,
-      },
+      .velocity =
+          (Vector2){
+              .x = LOGO_VELOCITY_X,
+              .y = LOGO_VELOCITY_Y,
+          },
 
       .dvdColor = WHITE,
 
-    };
+  };
 
-    return dvdLogo;
+  return dvdLogo;
 }
 
 void ChangeDVDColor(DVDLogo *dvdLogo) {
-    dvdLogo->dvdColor = (Color){
-        .r = GetRandomValue(100, 255),
-        .g = GetRandomValue(100, 255),
-        .b = GetRandomValue(100, 255),
-        .a = 255,
-    };
+  dvdLogo->dvdColor = (Color){
+      .r = GetRandomValue(100, 255),
+      .g = GetRandomValue(100, 255),
+      .b = GetRandomValue(100, 255),
+      .a = 255,
+  };
 }
 
 void HorizontalCollision(DVDLogo *dvdLogo) {
@@ -107,24 +111,35 @@ int main(int argc, char *argv[]) {
 
   InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "DVD LOGO");
 
-  Texture texture = InitDVDLogoTexture();
+  Texture texture = InitDVDLogoTexture("./DVD_VIDEO_logo.png");
 
-  DVDLogo dvdLogo = InitDVDLogo(texture);
+  int logoCount = 10;
+
+  DVDLogo dvdLogos[logoCount];
+
+  for (int i = 0; i < logoCount; i++) {
+     dvdLogos[i] = InitDVDLogo(texture);
+  }
 
   SetTargetFPS(60);
 
   while (!WindowShouldClose()) {
 
-    UpdateDVDLogo(&dvdLogo);
+      BeginDrawing();
 
-    BeginDrawing();
+        ClearBackground(BLACK);
 
-    ClearBackground(BLACK);
-    DrawTexturePro(texture, dvdLogo.srcRect, dvdLogo.dstRect,
-                   dvdLogo.originCoords, 0, dvdLogo.dvdColor);
-    DrawFPS(10, 10);
+      for (int i = 0; i < logoCount; i++){
 
-    EndDrawing();
+        UpdateDVDLogo(&dvdLogos[i]);
+
+        DrawTexturePro(texture, dvdLogos[i].srcRect, dvdLogos[i].dstRect,
+                      dvdLogos[i].originCoords, 0, dvdLogos[i].dvdColor);
+
+        DrawFPS(10, 10);
+      }
+
+      EndDrawing();
   }
 
   UnloadTexture(texture);
