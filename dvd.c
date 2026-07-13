@@ -10,11 +10,11 @@
 #define LOGO_VELOCITY_Y 200
 
 typedef struct DVDLogo {
-  Rectangle srcRect;
-  Rectangle dstRect;
-  Vector2 originCoords;
-  Vector2 velocity;
-  Color dvdColor;
+    Rectangle srcRect;
+    Rectangle dstRect;
+    Vector2 originCoords;
+    Vector2 velocity;
+    Color dvdColor;
 } DVDLogo;
 
 Texture InitDVDLogoTexture(const char *path) {
@@ -113,7 +113,7 @@ int main(int argc, char *argv[]) {
 
   Texture texture = InitDVDLogoTexture("./DVD_VIDEO_logo.png");
 
-  int logoCount = 10;
+  int logoCount = 1;
 
   DVDLogo dvdLogos[logoCount];
 
@@ -129,15 +129,15 @@ int main(int argc, char *argv[]) {
 
         ClearBackground(BLACK);
 
-      for (int i = 0; i < logoCount; i++){
+        for (int i = 0; i < logoCount; i++) {
 
-        UpdateDVDLogo(&dvdLogos[i]);
+          UpdateDVDLogo(&dvdLogos[i]);
 
-        DrawTexturePro(texture, dvdLogos[i].srcRect, dvdLogos[i].dstRect,
-                      dvdLogos[i].originCoords, 0, dvdLogos[i].dvdColor);
+          DrawTexturePro(texture, dvdLogos[i].srcRect, dvdLogos[i].dstRect,
+                        dvdLogos[i].originCoords, 0, dvdLogos[i].dvdColor);
 
-        DrawFPS(10, 10);
-      }
+          DrawFPS(10, 10);
+        }
 
       EndDrawing();
   }
