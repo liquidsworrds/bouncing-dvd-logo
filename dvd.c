@@ -97,11 +97,23 @@ void VerticalCollison(DVDLogo *dvdLogo) {
   }
 }
 
-void UpdateDVDLogo(DVDLogo *dvdLogo) {
+void DVDMouseDrag(DVDLogo *dvdLogo) {
+  if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+    dvdLogo->dstRect.x = GetMousePosition().x;
+    dvdLogo->dstRect.y = GetMousePosition().y;
+  }
+}
+
+
+void UpdateDVDLogo(DVDLogo *dvdLogo, bool mouseMode) {
   float dt = GetFrameTime();
 
   dvdLogo->dstRect.x += dvdLogo->velocity.x * dt;
   dvdLogo->dstRect.y += dvdLogo->velocity.y * dt;
+
+  if (mouseMode) {
+    DVDMouseDrag(dvdLogo);
+  }
 
   HorizontalCollision(dvdLogo);
   VerticalCollison(dvdLogo);
@@ -114,6 +126,7 @@ int main(int argc, char *argv[]) {
   Texture texture = InitDVDLogoTexture("./DVD_VIDEO_logo.png");
 
   int logoCount = 1;
+  bool mouseMode = false;
 
   DVDLogo dvdLogos[logoCount];
 
@@ -130,12 +143,13 @@ int main(int argc, char *argv[]) {
         ClearBackground(BLACK);
 
         for (int i = 0; i < logoCount; i++) {
-
-          UpdateDVDLogo(&dvdLogos[i]);
-
+          //Mouse Drag Mode Key = Spacebar
+          if (IsKeyPressed(KEY_SPACE)) {
+            mouseMode = !mouseMode;
+          }
+          UpdateDVDLogo(&dvdLogos[i], mouseMode);
           DrawTexturePro(texture, dvdLogos[i].srcRect, dvdLogos[i].dstRect,
                         dvdLogos[i].originCoords, 0, dvdLogos[i].dvdColor);
-
           DrawFPS(10, 10);
         }
 
